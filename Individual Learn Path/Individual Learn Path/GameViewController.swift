@@ -10,6 +10,8 @@ import UIKit
 import SpriteKit
 import GameplayKit
 
+var currentGameMode = gameMode.easy
+
 class GameViewController: UIViewController {
 
     override func viewDidLoad() {
