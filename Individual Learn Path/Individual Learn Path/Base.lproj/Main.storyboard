@@ -52,11 +52,20 @@
                                     <action selector="play:" destination="ezE-KO-Rvw" eventType="touchUpInside" id="Yvt-st-wvx"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IBc-zi-CYN">
+                                <rect key="frame" x="418.5" y="239" width="59" height="30"/>
+                                <state key="normal" title="Connect"/>
+                                <connections>
+                                    <action selector="showConnectionPrompt:" destination="ezE-KO-Rvw" eventType="touchUpInside" id="61w-B3-Uby"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="IBc-zi-CYN" firstAttribute="top" secondItem="2Ns-9e-IHZ" secondAttribute="bottom" constant="17" id="9ib-yl-wql"/>
                             <constraint firstItem="2Ns-9e-IHZ" firstAttribute="centerY" secondItem="ijc-q1-ISb" secondAttribute="centerY" id="gCt-P3-COy"/>
                             <constraint firstItem="2Ns-9e-IHZ" firstAttribute="centerX" secondItem="ijc-q1-ISb" secondAttribute="centerX" id="nJb-g3-Cg3"/>
+                            <constraint firstItem="IBc-zi-CYN" firstAttribute="centerX" secondItem="ijc-q1-ISb" secondAttribute="centerX" id="sa9-EH-WFs"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Jxr-kW-yg2"/>
                     </view>

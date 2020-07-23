@@ -9,10 +9,16 @@
 import UIKit
 import SpriteKit
 import GameplayKit
+import MultipeerConnectivity
 
 var currentGameMode = gameMode.easy
 
 class GameViewController: UIViewController {
+    
+    var PeerID: MCPeerID?
+    var mcSession: MCSession?
+    var mcAdvertiserAssistant: MCAdvertiserAssistant?
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
