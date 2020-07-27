@@ -78,15 +78,17 @@ class MenuVC: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelega
     }
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        let displayName = peerID.displayName
+        
         switch state {
         case .connected:
-            print("Connected: \(peerID.displayName)")
+            print("Connected: \(displayName)")
         case .connecting:
-            print("Connecting: \(peerID.displayName)")
+            print("Connecting: \(displayName)")
         case .notConnected:
-            print("Not connected: \(peerID.displayName)")
+            print("Not connected: \(displayName)")
         @unknown default:
-            print("deu ruim, clã: \(peerID.displayName)")
+            print("deu ruim, clã: \(displayName)")
         }
     }
     
