@@ -1,2 +1,2 @@
-# swift-pong-game
-My Individual Learn Journey for Apple Developer Academy during mid june -> august vacation. Learn objectives: SpriteKit, MultipeerConnection and Core ML. More details coming soon.
+# Individual Learn Path
+My Individual Learn Path for Apple Developer Academy's during mid june -> august vacation. Learn objectives: Git (on Terminal), Github markdown and Pages, SpriteKit, MultipeerConnectivity, SceneKit and CoreML. More details coming soon.
