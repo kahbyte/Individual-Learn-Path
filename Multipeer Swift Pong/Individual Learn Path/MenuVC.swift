@@ -17,13 +17,20 @@ enum gameMode {
     case p2pMultiplayer
 }
 
+enum gameEvent: String{
+    case startGame = "startGame"
+    case endGame = "endGame"
+    case pauseGame = "pauseGame"
+}
+
 var peerID: MCPeerID?
 var mcSession: MCSession?
 var mcAdvertiserAssistant: MCAdvertiserAssistant?
 var senderServiceType = "myString"
+var isConnected = false
+var isHost = false
 
-
-class MenuVC: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelegate {
+class MenuVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,11 +38,16 @@ class MenuVC: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelega
         peerID = MCPeerID(displayName: UIDevice.current.name)
         mcSession = MCSession(peer: peerID!, securityIdentity: nil, encryptionPreference: .required)
         mcSession?.delegate = self
-        
     }
     
     @IBAction func play(_ sender: Any) {
-        moveToGame(game: .easy)
+        if !isConnected || isHost {
+            moveToGame(game: .easy)
+            
+            if isConnected{
+                sendCommand(event: .startGame)
+            }
+        }
     }
     
     //Receives a game mode and starts the game.
@@ -47,73 +59,72 @@ class MenuVC: UIViewController, MCSessionDelegate, MCBrowserViewControllerDelega
         self.navigationController?.pushViewController(gameVC, animated: true)
     }
     
-    @IBAction func showConnectionPrompt(_ sender: UIButton) {
-        let ac = UIAlertController(title: "Teste multipeer", message: "hmm coquinha", preferredStyle: .actionSheet) //(UIDevice.current.userInterfaceIdiom == .phone ? .actionSheet : .actionSheet))
-        
-        ac.addAction(UIAlertAction(title: "Host a session", style: .default, handler: startHosting))
-        
-        ac.addAction(UIAlertAction(title: "Join a session", style: .default, handler: joinSession))
-        ac.addAction(UIAlertAction(title: "Cancel", style: .destructive))
-        
-        if UIDevice.current.userInterfaceIdiom == .pad{
-            ac.popoverPresentationController?.sourceView = self.view
-            ac.popoverPresentationController?.sourceRect = sender.frame
+    func sendCommand(event: gameEvent){
+        if mcSession?.connectedPeers.count == 0 { return }
+        do{
+            try mcSession?.send(event.rawValue.data(using: .utf8)!, toPeers: mcSession!.connectedPeers, with: .reliable)
+        } catch let error {
+            print(error)
         }
-        
-        present(ac, animated: true)
     }
     
+    func receivedCommand(action: String, peerID: String){
+        DispatchQueue.main.async {
+                    if action == gameEvent.startGame.rawValue {
+                        self.moveToGame(game: .p2pMultiplayer)
+            }
+        }
+    }
     
-    func startHosting(action: UIAlertAction) {
+    @IBAction func showConnectionPrompt(_ sender: UIButton) {
+    
+        let sessionAlertController = UIAlertController(title: "Teste multipeer", message: "hmm coquinha", preferredStyle: .actionSheet) //(UIDevice.current.userInterfaceIdiom == .phone ? .actionSheet : .actionSheet))
+        if !isConnected {
+            sessionAlertController.addAction(UIAlertAction(title: "Host a session", style: .default, handler: startHostingSession))
+            
+            sessionAlertController.addAction(UIAlertAction(title: "Join a session", style: .default, handler: joinSession))
+            }
+        else{
+            sessionAlertController.addAction(UIAlertAction(title: "Disconnect", style: .destructive, handler: disconnectSession))
+        }
+            
+            sessionAlertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        if UIDevice.current.userInterfaceIdiom == .pad{
+            sessionAlertController.popoverPresentationController?.sourceView = self.view
+            sessionAlertController.popoverPresentationController?.sourceRect = sender.frame
+        }
+        
+        present(sessionAlertController, animated: true)
+    }
+    
+    //MARK: START, JOIN and DISCONNECT functions
+    func startHostingSession(action: UIAlertAction) {
         guard let mcSession = mcSession else { return }
         mcAdvertiserAssistant = MCAdvertiserAssistant(serviceType: senderServiceType, discoveryInfo: nil, session: mcSession)
         mcAdvertiserAssistant?.start()
+        
+        isConnected = true
+        isHost = true
     }
     
     func joinSession(action: UIAlertAction){
         guard let mcSession = mcSession else { return }
         let mcBrowser = MCBrowserViewController(serviceType: senderServiceType, session: mcSession)
+        mcBrowser.maximumNumberOfPeers = 1
         mcBrowser.delegate = self
         present(mcBrowser, animated: true)
-    }
-    
-    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        let displayName = peerID.displayName
         
-        switch state {
-        case .connected:
-            print("Connected: \(displayName)")
-        case .connecting:
-            print("Connecting: \(displayName)")
-        case .notConnected:
-            print("Not connected: \(displayName)")
-        @unknown default:
-            print("deu ruim, clã: \(displayName)")
-        }
+        isConnected = true
+        isHost = false
     }
     
-    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+    func disconnectSession(action: UIAlertAction){
+        guard let mcSession = mcSession else { return }
+        mcSession.disconnect()
+        mcAdvertiserAssistant?.stop()
         
-    }
-    
-    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-
-    }
-    
-    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        
-    }
-    
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
-
-    }
-    
-    func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
-        dismiss(animated: true, completion: nil)
+        isConnected = false
+        isHost = false
     }
 }
-
