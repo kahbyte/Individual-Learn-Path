@@ -18,7 +18,8 @@ class GameViewController: UIViewController {
     var PeerID: MCPeerID?
     var mcSession: MCSession?
     var mcAdvertiserAssistant: MCAdvertiserAssistant?
-
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +45,7 @@ class GameViewController: UIViewController {
         return true
     }
 
+    
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if UIDevice.current.userInterfaceIdiom == .phone {
             return .allButUpsideDown

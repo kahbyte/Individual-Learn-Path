@@ -17,6 +17,8 @@
 		244ADDDE24B3769B00A1ACDD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 244ADDDD24B3769B00A1ACDD /* Assets.xcassets */; };
 		244ADDE124B3769B00A1ACDD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 244ADDDF24B3769B00A1ACDD /* LaunchScreen.storyboard */; };
 		24C4E00F24C21BF100A9C0EB /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C4E00E24C21BF100A9C0EB /* MenuVC.swift */; };
+		24C6B7D524D5181E00268284 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C6B7D424D5181E00268284 /* ConnectionManager.swift */; };
+		24C6B7D724D5270700268284 /* ConnectionManagerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C6B7D624D5270700268284 /* ConnectionManagerProtocols.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		244ADDE024B3769B00A1ACDD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		244ADDE224B3769B00A1ACDD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		24C4E00E24C21BF100A9C0EB /* MenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
+		24C6B7D424D5181E00268284 /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
+		24C6B7D624D5270700268284 /* ConnectionManagerProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManagerProtocols.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +75,8 @@
 				244ADDD824B3769800A1ACDD /* GameViewController.swift */,
 				24C4E00E24C21BF100A9C0EB /* MenuVC.swift */,
 				242F60D024D0D8CB0050E5E3 /* MenuVCExtension.swift */,
+				24C6B7D424D5181E00268284 /* ConnectionManager.swift */,
+				24C6B7D624D5270700268284 /* ConnectionManagerProtocols.swift */,
 				244ADDDA24B3769800A1ACDD /* Main.storyboard */,
 				244ADDDD24B3769B00A1ACDD /* Assets.xcassets */,
 				244ADDDF24B3769B00A1ACDD /* LaunchScreen.storyboard */,
@@ -153,8 +159,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				244ADDD724B3769800A1ACDD /* GameScene.swift in Sources */,
+				24C6B7D524D5181E00268284 /* ConnectionManager.swift in Sources */,
 				24C4E00F24C21BF100A9C0EB /* MenuVC.swift in Sources */,
 				242F60D124D0D8CB0050E5E3 /* MenuVCExtension.swift in Sources */,
+				24C6B7D724D5270700268284 /* ConnectionManagerProtocols.swift in Sources */,
 				244ADDD924B3769800A1ACDD /* GameViewController.swift in Sources */,
 				244ADDD124B3769800A1ACDD /* AppDelegate.swift in Sources */,
 			);

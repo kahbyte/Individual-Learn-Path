@@ -17,27 +17,36 @@ enum gameMode {
     case p2pMultiplayer
 }
 
-enum gameEvent: String{
+enum gameEvent: String {
     case startGame = "startGame"
     case endGame = "endGame"
     case pauseGame = "pauseGame"
 }
 
-var peerID: MCPeerID?
+protocol menuVCDelegate{
+    func receivedOpponentPosition(opponentYPosition: CGFloat)
+}
+
+/*var peerID: MCPeerID?
 var mcSession: MCSession?
 var mcAdvertiserAssistant: MCAdvertiserAssistant?
-var senderServiceType = "myString"
+var senderServiceType = "myString" */
 var isConnected = false
 var isHost = false
 
+let connectionManager = ConnectionManager.self
+
 class MenuVC: UIViewController {
+    var delegate: menuVCDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        peerID = MCPeerID(displayName: UIDevice.current.name)
+        /*peerID = MCPeerID(displayName: UIDevice.current.name)
         mcSession = MCSession(peer: peerID!, securityIdentity: nil, encryptionPreference: .required)
-        mcSession?.delegate = self
+        mcSession?.delegate = self*/
+        
+        connectionManager.shared.delegate = self
     }
     
     @IBAction func play(_ sender: Any) {
@@ -60,18 +69,24 @@ class MenuVC: UIViewController {
     }
     
     func sendCommand(event: gameEvent){
-        if mcSession?.connectedPeers.count == 0 { return }
+        /*if mcSession?.connectedPeers.count == 0 { return }
         do{
-            try mcSession?.send(event.rawValue.data(using: .utf8)!, toPeers: mcSession!.connectedPeers, with: .reliable)
+            let command = NSKeyedArchiver.archivedData(withRootObject: event.rawValue)
+            
+            try mcSession?.send(command, toPeers: mcSession!.connectedPeers, with: .reliable)
         } catch let error {
             print(error)
-        }
+        }*/
     }
     
     func receivedCommand(action: String, peerID: String){
         DispatchQueue.main.async {
-                    if action == gameEvent.startGame.rawValue {
-                        self.moveToGame(game: .p2pMultiplayer)
+            if action == gameEvent.startGame.rawValue {
+                self.moveToGame(game: .p2pMultiplayer)
+            }
+            
+            if action == gameEvent.endGame.rawValue {
+                
             }
         }
     }
@@ -100,19 +115,15 @@ class MenuVC: UIViewController {
     
     //MARK: START, JOIN and DISCONNECT functions
     func startHostingSession(action: UIAlertAction) {
-        guard let mcSession = mcSession else { return }
-        mcAdvertiserAssistant = MCAdvertiserAssistant(serviceType: senderServiceType, discoveryInfo: nil, session: mcSession)
-        mcAdvertiserAssistant?.start()
+        connectionManager.shared.startHosting()
         
         isConnected = true
         isHost = true
     }
     
+    
     func joinSession(action: UIAlertAction){
-        guard let mcSession = mcSession else { return }
-        let mcBrowser = MCBrowserViewController(serviceType: senderServiceType, session: mcSession)
-        mcBrowser.maximumNumberOfPeers = 1
-        mcBrowser.delegate = self
+        let mcBrowser = connectionManager.shared.join()
         present(mcBrowser, animated: true)
         
         isConnected = true
@@ -120,11 +131,12 @@ class MenuVC: UIViewController {
     }
     
     func disconnectSession(action: UIAlertAction){
-        guard let mcSession = mcSession else { return }
-        mcSession.disconnect()
-        mcAdvertiserAssistant?.stop()
+        connectionManager.shared.disconnect()
         
         isConnected = false
         isHost = false
     }
+    
 }
+
+

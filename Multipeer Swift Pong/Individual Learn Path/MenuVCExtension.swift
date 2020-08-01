@@ -9,7 +9,7 @@
 import Foundation
 import MultipeerConnectivity
 
-extension MenuVC: MCSessionDelegate{
+/*extension MenuVC: MCSessionDelegate{
     
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         let displayName = peerID.displayName
@@ -30,9 +30,22 @@ extension MenuVC: MCSessionDelegate{
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        guard let command = String(data: data, encoding: .utf8) else { return }
+        let command = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? String
         
-        receivedCommand(action: command, peerID: peerID.displayName)
+        let enemyYPosition = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? CGFloat
+        
+//          let data = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? String
+        
+        
+        if command == "startGame" {
+            receivedCommand(action: command!, peerID: peerID.displayName)
+        } else {
+            print("localização recebida \(String(describing: enemyYPosition)), enviando comando")
+            
+            print(delegate)
+            
+            delegate?.receivedOpponentPosition(opponentYPosition: CGFloat(enemyYPosition!))
+        }
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
@@ -58,4 +71,11 @@ extension MenuVC: MCBrowserViewControllerDelegate{
     func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
         dismiss(animated: true, completion: nil)
     }
+}*/
+
+extension MenuVC: ConnectionManagerDelegate{
+    func dismissBrowserVC() {
+        self.dismiss(animated: true, completion: nil)
+    }
 }
+

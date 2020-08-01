@@ -9,8 +9,9 @@
 import SpriteKit
 import GameplayKit
 
+
+
 class GameScene: SKScene {
-    
     ///MARK: Nodes
     var ball = SKSpriteNode()
     var player = SKSpriteNode()
@@ -40,7 +41,7 @@ class GameScene: SKScene {
         
         player = self.childNode(withName: "player") as! SKSpriteNode
         player.position.x = (-self.frame.width / 2) + 70 // sets paddle position programmatically. Helps with different sizes
-            
+             
         opponent = self.childNode(withName: "opponent") as! SKSpriteNode
         opponent.position.x = (self.frame.width / 2) - 70 // sets paddle position programmatically. Helps with different sizes
         
@@ -61,10 +62,15 @@ class GameScene: SKScene {
         for touch in touches{
             let location = touch.location(in: self)
             
-            if location.x < 0{
+            if location.x < 0 {
+                
                 player.run(SKAction.moveTo(y: location.y, duration: 0.1))
-            } else if location.x > 0{
+                
+                sendPosition(myYPosition: location.y)
+                
+            } else if location.x > 0 && !isConnected {
                 opponent.run(SKAction.moveTo(y: location.y, duration: 0.1))
+                sendPosition(myYPosition: location.y)
             }
         }
     }
@@ -73,10 +79,14 @@ class GameScene: SKScene {
         for touch in touches{
             let location = touch.location(in: self)
             
-            if location.x < 0{
+            if location.x < 0 {
                 player.run(SKAction.moveTo(y: location.y, duration: 0.1))
-            } else if location.x > 0{
+                
+                sendPosition(myYPosition: location.y)
+                
+            } else if location.x > 0 && !isConnected {
                 opponent.run(SKAction.moveTo(y: location.y, duration: 0.1))
+                sendPosition(myYPosition: location.y)
             }
         }
     }
@@ -158,5 +168,26 @@ extension GameScene {
     /*the ball velocity and position resets to zero, displays the victory/defeat animation and performs the segue back to the lobby*/
     func endGame(){
         resetBall()
+    }
+    
+    /*my first attempt to make the paddle move synched between devices*/
+    func sendPosition(myYPosition: CGFloat){
+        /*if mcSession?.connectedPeers.count == 0 { return }
+        
+        print("Recebido comando, senhor! enviando localização")
+        
+        let locationData = NSKeyedArchiver.archivedData(withRootObject: myYPosition)
+        
+        do{
+            try mcSession?.send(locationData, toPeers: mcSession!.connectedPeers, with: .reliable)
+            
+            print("localização enviada com sucesso!")
+        } catch let error{
+            print(error)
+        }
+        
+        let position = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(locationData) as? CGFloat
+        
+        print("teste recebido: \(String(describing: position))")*/
     }
 }
