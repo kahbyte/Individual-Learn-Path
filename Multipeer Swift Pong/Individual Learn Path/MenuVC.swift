@@ -9,6 +9,7 @@
 import UIKit
 import MultipeerConnectivity
 
+//I think this should not be here.
 enum gameMode {
     case easy
     case medium
@@ -23,28 +24,16 @@ enum gameEvent: String {
     case pauseGame = "pauseGame"
 }
 
-protocol menuVCDelegate{
-    func receivedOpponentPosition(opponentYPosition: CGFloat)
-}
-
-/*var peerID: MCPeerID?
-var mcSession: MCSession?
-var mcAdvertiserAssistant: MCAdvertiserAssistant?
-var senderServiceType = "myString" */
+//These two will be used for some cocain logic
 var isConnected = false
 var isHost = false
 
 let connectionManager = ConnectionManager.self
 
 class MenuVC: UIViewController {
-    var delegate: menuVCDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        /*peerID = MCPeerID(displayName: UIDevice.current.name)
-        mcSession = MCSession(peer: peerID!, securityIdentity: nil, encryptionPreference: .required)
-        mcSession?.delegate = self*/
         
         connectionManager.shared.delegate = self
     }
@@ -69,16 +58,18 @@ class MenuVC: UIViewController {
     }
     
     func sendCommand(event: gameEvent){
-        /*if mcSession?.connectedPeers.count == 0 { return }
+        if connectionManager.shared.mcSession?.connectedPeers.count == 0 { return } //acho que eu nunca vi tanto . concatenado
+        
         do{
-            let command = NSKeyedArchiver.archivedData(withRootObject: event.rawValue)
+            let command = try? NSKeyedArchiver.archivedData(withRootObject: event.rawValue, requiringSecureCoding: true)
             
-            try mcSession?.send(command, toPeers: mcSession!.connectedPeers, with: .reliable)
+            try connectionManager.shared.mcSession?.send(command!, toPeers: connectionManager.shared.mcSession!.connectedPeers, with: .reliable)
         } catch let error {
-            print(error)
-        }*/
+            print(error) //change to NSLog have to study first.
+        }
     }
     
+    //fuck, isso aqui vai ter que virar um protocolo. 
     func receivedCommand(action: String, peerID: String){
         DispatchQueue.main.async {
             if action == gameEvent.startGame.rawValue {

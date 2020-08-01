@@ -9,21 +9,22 @@
 import Foundation
 import MultipeerConnectivity
 
-/*singleton*/
+/*singleton, because I want to use the same configuration and peers for the entire session and over different screens. If I had just instantiated the class, for instance, in the MenuVC, and then instantiated it again in the GameScene, they wouldn't carry the same information or peers. */
 class ConnectionManager: NSObject {
     
-    
+    /*This one made possible to dismiss the browser view controller using a function from the MCBrowserViewControllerDelegate. It was implemented in the MenuVC*/
     var delegate: ConnectionManagerDelegate?
     
     //MARK: INITIAL MULTIPEER CONFIG
-    private let senderServiceType = "ILP-Pong"
-    private let peerID = MCPeerID(displayName: UIDevice.current.name)
-    private let mcAdvertiserAssistant: MCAdvertiserAssistant?
-    private let mcSession: MCSession?
-    private let mcBrowser: MCBrowserViewController?
+    private let senderServiceType = "ILP-Pong" //an unique string that will be used to identify what I'm peering / looking for peers for.
+    private let peerID = MCPeerID(displayName: UIDevice.current.name) //The ID of the current device that will be transmitted over the sessions
+    private let mcAdvertiserAssistant: MCAdvertiserAssistant? //Will help to advertise my peer, when looking to host or join a session
+    let mcSession: MCSession? //The session itself. When stablished, will be used for sending, receiving and streaming data.
+    private let mcBrowser: MCBrowserViewController? //A standard view controller that's using when looking for and joining a session
     
-    static let shared = ConnectionManager()
+    static let shared = ConnectionManager() //this shit is making the magic happen. Thanks Igor =D
     
+    /*Classic. No need to explain.*/
     override private init(){
         self.mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
         
@@ -41,6 +42,7 @@ class ConnectionManager: NSObject {
         mcAdvertiserAssistant?.start()
     }
     
+    /*Returns a view controller that will be using for browsing*/
     func join() -> MCBrowserViewController {
         mcBrowser?.maximumNumberOfPeers = 1
         mcBrowser?.delegate = self
@@ -51,12 +53,10 @@ class ConnectionManager: NSObject {
     func disconnect(){
         mcSession?.disconnect()
         mcAdvertiserAssistant?.stop()
-        
-        isConnected = false
-        isHost = false
     }
 }
 
+//MARK: DATA RECEIVING FUNCTIONS
 extension ConnectionManager: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         
@@ -82,13 +82,28 @@ extension ConnectionManager: MCSessionDelegate {
 }
 
 extension ConnectionManager: MCBrowserViewControllerDelegate {
+    //if done is tapped, dismiss the VC
     func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
         self.delegate?.dismissBrowserVC()
     }
     
+    //if cancel is tapped, dismiss the VC
     func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
         self.delegate?.dismissBrowserVC()
     }
     
     
 }
+
+//░░░░▓█───────▄▄▀▀█──────
+//░░░░▒░█────▄█▒░░▄░█─────
+//░░░░░░░▀▄─▄▀▒▀▀▀▄▄▀─────
+//░░░░░░░░░█▒░░░░▄▀───────
+//▒▒▒░░░░▄▀▒░░░░▄▀────────
+//▓▓▓▓▒░█▒░░░░░█▄─────────
+//█████▀▒░░░░░█░▀▄────────
+//█████▒▒░░░▒█░░░▀▄───────
+//███▓▓▒▒▒▀▀▀█▄░░░░█──────
+//▓██▓▒▒▒▒▒▒▒▒▒█░░░░█─────
+//▓▓█▓▒▒▒▒▒▒▓▒▒█░░░░░█────
+//░▒▒▀▀▄▄▄▄█▄▄▀░░░░░░░█───
