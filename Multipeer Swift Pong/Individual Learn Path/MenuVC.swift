@@ -10,7 +10,7 @@ import UIKit
 import MultipeerConnectivity
 
 //I think this should not be here.
-enum gameMode {
+enum GameMode {
     case easy
     case medium
     case hard
@@ -18,7 +18,7 @@ enum gameMode {
     case p2pMultiplayer
 }
 
-enum gameEvent: String {
+enum GameEvent: String {
     case startGame = "startGame"
     case endGame = "endGame"
     case pauseGame = "pauseGame"
@@ -28,14 +28,14 @@ enum gameEvent: String {
 var isConnected = false
 var isHost = false
 
-let connectionManager = ConnectionManager.self
 
 class MenuVC: UIViewController {
+    let connectionManager = ConnectionManager.self
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        connectionManager.shared.delegate = self
+        connectionManager.shared.connectionDelegate = self
     }
     
     @IBAction func play(_ sender: Any) {
@@ -49,7 +49,7 @@ class MenuVC: UIViewController {
     }
     
     //Receives a game mode and starts the game.
-    func moveToGame(game: gameMode){
+    func moveToGame(game: GameMode){
         let gameVC = self.storyboard?.instantiateViewController(withIdentifier: "gameVC") as! GameViewController
         
         currentGameMode = game
@@ -57,30 +57,23 @@ class MenuVC: UIViewController {
         self.navigationController?.pushViewController(gameVC, animated: true)
     }
     
-    func sendCommand(event: gameEvent){
+    func sendCommand(event: GameEvent){
         if connectionManager.shared.mcSession?.connectedPeers.count == 0 { return } //acho que eu nunca vi tanto . concatenado
+        let dataToSend = PeerData(type: .gameEvent, opponentLocationData: nil, ballLocationData: nil, gameEvent: event.rawValue)
         
         do{
-            let command = try? NSKeyedArchiver.archivedData(withRootObject: event.rawValue, requiringSecureCoding: true)
+            guard let command = try? JSONEncoder().encode(dataToSend) else { return }
             
-            try connectionManager.shared.mcSession?.send(command!, toPeers: connectionManager.shared.mcSession!.connectedPeers, with: .reliable)
+            try connectionManager.shared.mcSession?.send(command, toPeers: connectionManager.shared.mcSession!.connectedPeers, with: .reliable)
         } catch let error {
             print(error) //change to NSLog have to study first.
         }
     }
     
-    //fuck, isso aqui vai ter que virar um protocolo. 
-    func receivedCommand(action: String, peerID: String){
-        DispatchQueue.main.async {
-            if action == gameEvent.startGame.rawValue {
-                self.moveToGame(game: .p2pMultiplayer)
-            }
-            
-            if action == gameEvent.endGame.rawValue {
-                
-            }
-        }
-    }
+    //fuck, isso aqui vai ter que virar um protocolo. /
+//    func receivedCommand(action: String, peerID: String){
+//
+//    }
     
     @IBAction func showConnectionPrompt(_ sender: UIButton) {
     

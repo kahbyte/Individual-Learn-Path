@@ -13,7 +13,8 @@ import MultipeerConnectivity
 class ConnectionManager: NSObject {
     
     /*This one made possible to dismiss the browser view controller using a function from the MCBrowserViewControllerDelegate. It was implemented in the MenuVC*/
-    var delegate: ConnectionManagerDelegate?
+    var connectionDelegate: ConnectionManagerDelegate?
+    var gameSceneDelegate: GameSceneDelegate?
     
     //MARK: INITIAL MULTIPEER CONFIG
     private let senderServiceType = "ILP-Pong" //an unique string that will be used to identify what I'm peering / looking for peers for.
@@ -50,50 +51,12 @@ class ConnectionManager: NSObject {
         return mcBrowser!
     }
     
-    func disconnect(){
+    func disconnect() {
         mcSession?.disconnect()
         mcAdvertiserAssistant?.stop()
     }
 }
 
-//MARK: DATA RECEIVING FUNCTIONS
-extension ConnectionManager: MCSessionDelegate {
-    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        
-    }
-    
-    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        
-    }
-    
-    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        
-    }
-    
-    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        
-    }
-    
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
-        
-    }
-    
-    
-}
-
-extension ConnectionManager: MCBrowserViewControllerDelegate {
-    //if done is tapped, dismiss the VC
-    func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
-        self.delegate?.dismissBrowserVC()
-    }
-    
-    //if cancel is tapped, dismiss the VC
-    func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
-        self.delegate?.dismissBrowserVC()
-    }
-    
-    
-}
 
 //░░░░▓█───────▄▄▀▀█──────
 //░░░░▒░█────▄█▒░░▄░█─────

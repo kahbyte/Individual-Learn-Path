@@ -19,6 +19,7 @@
 		24C4E00F24C21BF100A9C0EB /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C4E00E24C21BF100A9C0EB /* MenuVC.swift */; };
 		24C6B7D524D5181E00268284 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C6B7D424D5181E00268284 /* ConnectionManager.swift */; };
 		24C6B7D724D5270700268284 /* ConnectionManagerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C6B7D624D5270700268284 /* ConnectionManagerProtocols.swift */; };
+		24C776CD24D68CEF000D7029 /* ConnectionManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C776CC24D68CEF000D7029 /* ConnectionManagerExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		24C4E00E24C21BF100A9C0EB /* MenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
 		24C6B7D424D5181E00268284 /* ConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		24C6B7D624D5270700268284 /* ConnectionManagerProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManagerProtocols.swift; sourceTree = "<group>"; };
+		24C776CC24D68CEF000D7029 /* ConnectionManagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionManagerExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 		244ADDCF24B3769800A1ACDD /* Individual Learn Path */ = {
 			isa = PBXGroup;
 			children = (
+				24C776CB24D68CD1000D7029 /* Connection Manager */,
 				244ADDD024B3769800A1ACDD /* AppDelegate.swift */,
 				244ADDD224B3769800A1ACDD /* GameScene.sks */,
 				244ADDD424B3769800A1ACDD /* Actions.sks */,
@@ -75,14 +78,22 @@
 				244ADDD824B3769800A1ACDD /* GameViewController.swift */,
 				24C4E00E24C21BF100A9C0EB /* MenuVC.swift */,
 				242F60D024D0D8CB0050E5E3 /* MenuVCExtension.swift */,
-				24C6B7D424D5181E00268284 /* ConnectionManager.swift */,
-				24C6B7D624D5270700268284 /* ConnectionManagerProtocols.swift */,
 				244ADDDA24B3769800A1ACDD /* Main.storyboard */,
 				244ADDDD24B3769B00A1ACDD /* Assets.xcassets */,
 				244ADDDF24B3769B00A1ACDD /* LaunchScreen.storyboard */,
 				244ADDE224B3769B00A1ACDD /* Info.plist */,
 			);
 			path = "Individual Learn Path";
+			sourceTree = "<group>";
+		};
+		24C776CB24D68CD1000D7029 /* Connection Manager */ = {
+			isa = PBXGroup;
+			children = (
+				24C6B7D424D5181E00268284 /* ConnectionManager.swift */,
+				24C6B7D624D5270700268284 /* ConnectionManagerProtocols.swift */,
+				24C776CC24D68CEF000D7029 /* ConnectionManagerExtension.swift */,
+			);
+			path = "Connection Manager";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,6 +175,7 @@
 				242F60D124D0D8CB0050E5E3 /* MenuVCExtension.swift in Sources */,
 				24C6B7D724D5270700268284 /* ConnectionManagerProtocols.swift in Sources */,
 				244ADDD924B3769800A1ACDD /* GameViewController.swift in Sources */,
+				24C776CD24D68CEF000D7029 /* ConnectionManagerExtension.swift in Sources */,
 				244ADDD124B3769800A1ACDD /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

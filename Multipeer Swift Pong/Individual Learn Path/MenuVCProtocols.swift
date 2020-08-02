@@ -1,5 +1,5 @@
 //
-//  ConnectionManagerProtocols.swift
+//  MenuVCProtocols.swift
 //  Individual Learn Path
 //
 //  Created by Kauê Sales on 01/08/20.
@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import MultipeerConnectivity
 
-protocol ConnectionManagerDelegate {
-    func dismissBrowserVC()
+protocol MenuVCDelegate {
+    func receivedCommand(command: String, peerID: String)
 }

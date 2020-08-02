@@ -11,7 +11,7 @@ import SpriteKit
 import GameplayKit
 import MultipeerConnectivity
 
-var currentGameMode = gameMode.easy
+var currentGameMode = GameMode.easy
 
 class GameViewController: UIViewController {
     

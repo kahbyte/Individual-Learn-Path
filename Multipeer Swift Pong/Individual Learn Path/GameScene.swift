@@ -9,8 +9,6 @@
 import SpriteKit
 import GameplayKit
 
-
-
 class GameScene: SKScene {
     ///MARK: Nodes
     var ball = SKSpriteNode()
@@ -25,15 +23,12 @@ class GameScene: SKScene {
     var force = 8
     let maxScore = 10
     
-    enum gameMode{
-        case easy
-        case medium
-        case hard
-        case localMultiplayer
-        case peerToPeerMultiplayer
-    }
+    let connectionManager = ConnectionManager.self
+
+    
     
     override func didMove(to view: SKView){
+        connectionManager.shared.gameSceneDelegate = self
         
         //this allows me to use the nodes
         ball = self.childNode(withName: "ball") as! SKSpriteNode
@@ -54,8 +49,10 @@ class GameScene: SKScene {
         border.friction = 0
         border.restitution = 1
         self.physicsBody = border
-        
-        startGame()
+                
+        if !isConnected || isHost {
+            startGame()
+        }
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -66,11 +63,12 @@ class GameScene: SKScene {
                 
                 player.run(SKAction.moveTo(y: location.y, duration: 0.1))
                 
-                sendPosition(myYPosition: location.y)
+                if isConnected{
+                    sendMyPosition(myYPosition: location.y)
+                }
                 
             } else if location.x > 0 && !isConnected {
                 opponent.run(SKAction.moveTo(y: location.y, duration: 0.1))
-                sendPosition(myYPosition: location.y)
             }
         }
     }
@@ -82,17 +80,21 @@ class GameScene: SKScene {
             if location.x < 0 {
                 player.run(SKAction.moveTo(y: location.y, duration: 0.1))
                 
-                sendPosition(myYPosition: location.y)
-                
+                if isConnected{
+                    sendMyPosition(myYPosition: location.y)
+                }
             } else if location.x > 0 && !isConnected {
                 opponent.run(SKAction.moveTo(y: location.y, duration: 0.1))
-                sendPosition(myYPosition: location.y)
             }
         }
     }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        
+        if isConnected{
+            sendBallPosition(positionData: ball.position)
+        }
         
         if ball.position.x <= player.position.x{
             addScore(playerWhoScored: opponent)
@@ -139,7 +141,7 @@ extension GameScene {
         /*if the maxScore is reached, the game ends. Else, the ball is launched again*/
         if score.playerScore == maxScore || score.opponentScore == maxScore{
             endGame()
-        } else{
+        } else if !isConnected || isHost {
             ball.physicsBody?.applyImpulse(impulse)
         }
         
@@ -160,6 +162,7 @@ extension GameScene {
     
     /*Resets the ball velocity to zero and to initial position*/
     func resetBall(){
+        
         ball.position = CGPoint(x: 0, y: 0)
         ball.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
 
@@ -171,23 +174,46 @@ extension GameScene {
     }
     
     /*my first attempt to make the paddle move synched between devices*/
-    func sendPosition(myYPosition: CGFloat){
-        /*if mcSession?.connectedPeers.count == 0 { return }
-        
-        print("Recebido comando, senhor! enviando localização")
-        
-        let locationData = NSKeyedArchiver.archivedData(withRootObject: myYPosition)
+    func sendMyPosition(myYPosition: CGFloat){
+        if connectionManager.shared.mcSession?.connectedPeers.count == 0 { return }
+                
+        let dataToSend = PeerData(type: .opponentLocationData, opponentLocationData: myYPosition, ballLocationData: nil, gameEvent: nil)
         
         do{
-            try mcSession?.send(locationData, toPeers: mcSession!.connectedPeers, with: .reliable)
+            guard let positionData = try? JSONEncoder().encode(dataToSend) else { return }
             
-            print("localização enviada com sucesso!")
+            try connectionManager.shared.mcSession?.send(positionData, toPeers: connectionManager.shared.mcSession!.connectedPeers, with: .reliable)
+            
         } catch let error{
             print(error)
         }
+    }
+    
+    func sendBallPosition(positionData: CGPoint) {
+        if connectionManager.shared.mcSession?.connectedPeers.count == 0 { return }
         
-        let position = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(locationData) as? CGFloat
+        let dataToSend = PeerData(type: .ballLocationData, opponentLocationData: nil, ballLocationData: positionData, gameEvent: nil)
         
-        print("teste recebido: \(String(describing: position))")*/
+        do{
+            guard let positionData = try? JSONEncoder().encode(dataToSend) else { return }
+            
+            try connectionManager.shared.mcSession?.send(positionData, toPeers: connectionManager.shared.mcSession!.connectedPeers, with: .reliable)
+            
+        } catch let error{
+            print(error)
+        }
     }
 }
+
+extension GameScene: GameSceneDelegate {
+    func updateMCOpponentPosition(yPosition: CGFloat) {
+        opponent.run(SKAction.moveTo(y: yPosition, duration: 0.1))
+    }
+    
+    func updateMCBallPosition(position: CGPoint) {
+        if !isHost{
+            ball.position = CGPoint(x: -position.x, y: position.y)
+        }
+    }
+}
+
