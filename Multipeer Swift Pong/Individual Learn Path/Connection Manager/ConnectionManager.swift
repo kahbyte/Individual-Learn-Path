@@ -12,7 +12,7 @@ import MultipeerConnectivity
 /*singleton, because I want to use the same configuration and peers for the entire session and over different screens. If I had just instantiated the class, for instance, in the MenuVC, and then instantiated it again in the GameScene, they wouldn't carry the same information or peers. */
 class ConnectionManager: NSObject {
     
-    /*This one made possible to dismiss the browser view controller using a function from the MCBrowserViewControllerDelegate. It was implemented in the MenuVC*/
+    /*This one made possible to dismiss the browser view controller using a function from the MCBrowserViewControllerDelegate. It was impolemented in the MenuVC*/
     var connectionDelegate: ConnectionManagerDelegate?
     var gameSceneDelegate: GameSceneDelegate?
     
@@ -57,16 +57,3 @@ class ConnectionManager: NSObject {
     }
 }
 
-
-//░░░░▓█───────▄▄▀▀█──────
-//░░░░▒░█────▄█▒░░▄░█─────
-//░░░░░░░▀▄─▄▀▒▀▀▀▄▄▀─────
-//░░░░░░░░░█▒░░░░▄▀───────
-//▒▒▒░░░░▄▀▒░░░░▄▀────────
-//▓▓▓▓▒░█▒░░░░░█▄─────────
-//█████▀▒░░░░░█░▀▄────────
-//█████▒▒░░░▒█░░░▀▄───────
-//███▓▓▒▒▒▀▀▀█▄░░░░█──────
-//▓██▓▒▒▒▒▒▒▒▒▒█░░░░█─────
-//▓▓█▓▒▒▒▒▒▒▓▒▒█░░░░░█────
-//░▒▒▀▀▄▄▄▄█▄▄▀░░░░░░░█───

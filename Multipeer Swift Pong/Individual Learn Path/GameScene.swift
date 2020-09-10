@@ -190,7 +190,7 @@ extension GameScene {
     }
     
     func sendBallPosition(positionData: CGPoint) {
-        if connectionManager.shared.mcSession?.connectedPeers.count == 0 { return }
+
         
         let dataToSend = PeerData(type: .ballLocationData, opponentLocationData: nil, ballLocationData: positionData, gameEvent: nil)
         

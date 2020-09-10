@@ -48,7 +48,6 @@ extension ConnectionManager: MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        
         guard let receivedData = try? JSONDecoder().decode(PeerData.self, from: data) else { return }
         
         /*if receivedData.type == possibleReceivedDataType.gameEvent.rawValue {
